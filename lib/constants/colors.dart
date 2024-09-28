@@ -29,11 +29,15 @@ class GlobalColors {
       {double? fontSize,
         Color? color,
         FontWeight? fontWeight,
-        double? height}) {
+        double? height,
+        String? fontFamily,
+
+      }) {
     return TextStyle(
       fontSize: fontSize ?? 24,
       color: color ?? GlobalColors.textColor,
       fontWeight: fontWeight ?? FontWeight.w800,
+      fontFamily: fontFamily?? 'Montserrat'
     );
   }
 }
