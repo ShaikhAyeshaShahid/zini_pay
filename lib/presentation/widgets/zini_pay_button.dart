@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zini_pay/constants/colors.dart';
 
 import '../../constants/size_config.dart';
 
@@ -14,35 +15,28 @@ class ZiniPayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF32D7E8), Color(0xFF44B4C1)],
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: SizeConfig.width(context, 1),
+        height: SizeConfig.height(context, 0.07),
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(
+          horizontal: SizeConfig.width(context, 0.07),
+          vertical: SizeConfig.width(context, 0.02),
         ),
-        borderRadius: BorderRadius.circular(SizeConfig.width(context, 1)),
-      ),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(),
-          backgroundColor: Colors.transparent,
-          disabledForegroundColor: Colors.transparent.withOpacity(0.38),
-          disabledBackgroundColor: Colors.transparent.withOpacity(0.12),
-          shadowColor: Colors.transparent,
+        decoration: BoxDecoration(
+          color: GlobalColors.buttonColor,
+          borderRadius: BorderRadius.circular(SizeConfig.width(context, 1)),
         ),
-        onPressed: onPressed,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: SizeConfig.width(context, 0.07),
-            vertical: SizeConfig.width(context, 0.02),
+        child: Text(
+          buttonText,
+          style: GlobalColors.textStyle(
+            fontSize: SizeConfig.width(context, 0.04),
+            color: GlobalColors.greyBgColor,
+            fontWeight: FontWeight.normal,
           ),
-          child: Text(
-            buttonText,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  fontSize: SizeConfig.width(context, 0.04),
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
+          textAlign: TextAlign.center,
         ),
       ),
     );

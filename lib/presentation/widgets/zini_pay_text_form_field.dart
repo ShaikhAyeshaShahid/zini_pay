@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:zini_pay/constants/colors.dart';
 
 import '../../constants/size_config.dart';
 
@@ -17,7 +18,8 @@ class ZiniPayTextFormField extends StatelessWidget {
   final Function(String?)? onChanged;
   final String? Function(String?)? validator;
 
-  const ZiniPayTextFormField({super.key,
+  const ZiniPayTextFormField({
+    super.key,
     required this.hintText,
     required this.keyboardType,
     this.visibility,
@@ -36,23 +38,28 @@ class ZiniPayTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.05)),
+        borderRadius: BorderRadius.circular(SizeConfig.width(context, 0.06)),
+/*
         boxShadow: [
           BoxShadow(
             color: Colors.black12.withOpacity((enabled ?? true) ? 0.15 : 0.1),
             blurRadius: SizeConfig.width(context, 0.03),
             // blurRadius: SizeConfig.width(context, 0.01),
             // soften the shadow
-            spreadRadius: (enabled ?? true)
-                ? SizeConfig.width(context, 0.005)
-                : 0,
+            spreadRadius:
+                (enabled ?? true) ? SizeConfig.width(context, 0.005) : 0,
             //extend the shadow
-            offset: (enabled ?? true) ? Offset(
-              SizeConfig.width(context, 0.01), // Move to right 5  horizontally
-              SizeConfig.width(context, 0.01), // Move to bottom 5 Vertically
-            ) : Offset.zero,
+            offset: (enabled ?? true)
+                ? Offset(
+                    SizeConfig.width(
+                        context, 0.01), // Move to right 5  horizontally
+                    SizeConfig.width(
+                        context, 0.01), // Move to bottom 5 Vertically
+                  )
+                : Offset.zero,
           ),
         ],
+*/
       ),
       child: TextFormField(
         controller: controller,
@@ -69,11 +76,11 @@ class ZiniPayTextFormField extends StatelessWidget {
         onChanged: onChanged ?? (String value) {},
         inputFormatters: inputFormatters ??
             ((keyboardType == TextInputType.phone ||
-                keyboardType == TextInputType.number)
+                    keyboardType == TextInputType.number)
                 ? [
-              FilteringTextInputFormatter.digitsOnly,
-              FilteringTextInputFormatter.allow(RegExp(r'\d')),
-            ]
+                    FilteringTextInputFormatter.digitsOnly,
+                    FilteringTextInputFormatter.allow(RegExp(r'\d')),
+                  ]
                 : []),
         validator: validator,
         decoration: InputDecoration(
@@ -86,15 +93,14 @@ class ZiniPayTextFormField extends StatelessWidget {
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(
-              SizeConfig.width(context, 0.03),
+              SizeConfig.width(context, 0.06),
             ),
           ),
           contentPadding: EdgeInsets.symmetric(
-            // vertical: SizeConfig.height(context, 0.03),
-            vertical: SizeConfig.height(context, 0.01),
+            vertical: SizeConfig.height(context, 0.02),
             horizontal: SizeConfig.width(context, 0.03),
           ),
-          fillColor: Colors.white,
+          fillColor: GlobalColors.greyBgColor,
         ),
       ),
     );
