@@ -7,6 +7,7 @@ import 'package:zini_pay/presentation/screens/home_screen.dart';
 
 import '../../constants/divider.dart';
 import '../../constants/images.dart';
+import '../../constants/logger.dart';
 import '../cubits/login/login_cubit.dart';
 import '../widgets/zini_pay_button.dart';
 import '../widgets/zini_pay_text_form_field.dart';
@@ -20,13 +21,15 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   late LoginCubit cubit;
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController apiKeyController = TextEditingController();
+   TextEditingController emailController = TextEditingController();
+   TextEditingController apiKeyController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     cubit = BlocProvider.of<LoginCubit>(context);
+    emailController.text = "user1@example.com";
+    apiKeyController.text = "apikey1";
     super.initState();
   }
 
@@ -43,12 +46,10 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
           if (state is LoginSuccessfully) {
-           /* ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text(
-                'password verified successfully',
-              ),
-            ));*/
-            Navigator.pushNamed(context, AppRoutes.homeScreen);
+            LogManager.debug('Login successful: ${state.message}');
+            // Navigate after successful login
+            Future.microtask(
+                () => Navigator.pushNamed(context, AppRoutes.homeScreen));
           }
         },
         builder: (context, state) {
@@ -61,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
             marginHor: 0.05,
             buttonText: 'Log In',
             onPressed: () {
-              if(_formKey.currentState!.validate()){
+              if (_formKey.currentState!.validate()) {
                 cubit.login(emailController.text, apiKeyController.text);
               }
             },

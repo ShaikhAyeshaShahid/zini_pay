@@ -24,10 +24,10 @@ class LoginFailed extends LoginState {
 }
 
 class LoginSuccessfully extends LoginState {
-  final AuthModel authModel;
+  final String message;
 
-  const LoginSuccessfully(this.authModel);
+  const LoginSuccessfully(this.message);
 
   @override
-  List<Object> get props => [authModel];
+  List<Object> get props => [message];
 }

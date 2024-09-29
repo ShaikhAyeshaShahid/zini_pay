@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zini_pay/constants/divider.dart';
+import 'package:zini_pay/presentation/cubits/smsSync/sms_sync_cubit.dart';
 
 import '../../constants/colors.dart';
 import '../../constants/images.dart';
@@ -15,22 +17,54 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late SmsSyncCubit cubit;
+
+  @override
+  void initState() {
+    cubit = BlocProvider.of<SmsSyncCubit>(context);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: ZiniPayButton(
-        padHor: 0,
-        padVer: 0,
-        marginHor: 0.1,
-        buttonText: 'Stop',
-        radius: 0.03,
-        fontSize: SizeConfig.width(context, 0.09),
-        fontFamily: "Acme",
-        color: Colors.white,
-        onPressed: () {
-          // Navigator.push(
-          //     context, MaterialPageRoute(builder: (_) => HomeScreen()));
-          Navigator.pushNamed(context, AppRoutes.homeScreen);
+      bottomNavigationBar: BlocConsumer<SmsSyncCubit, SmsSyncState>(
+        listener: (context, state) {
+          if (state is SmsSyncLoading) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('SMS syncing started')),
+            );
+          } else if (state is SmsSyncSuccessfully) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.message)),
+            );
+          } else if (state is SmsSyncFailed) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.errorMessage)),
+            );
+          }
+        },
+        builder: (context, state) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ZiniPayButton(
+                padHor: 0,
+                padVer: 0,
+                marginHor: 0.1,
+                buttonText: state is SmsSyncLoading ? 'Stop' : 'Start',
+                radius: 0.03,
+                fontSize: SizeConfig.width(context, 0.09),
+                fontFamily: "Acme",
+                color: Colors.white,
+                onPressed: () {
+                  if (state is! SmsSyncLoading) {
+                    cubit.smsSync();
+                  }
+                },
+              ),
+            ],
+          );
         },
       ),
       body: Container(
