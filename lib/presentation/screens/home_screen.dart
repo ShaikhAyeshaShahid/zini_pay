@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zini_pay/constants/divider.dart';
 import 'package:zini_pay/presentation/cubits/smsSync/sms_sync_cubit.dart';
@@ -24,6 +25,9 @@ class _HomeScreenState extends State<HomeScreen> {
     cubit = BlocProvider.of<SmsSyncCubit>(context);
     super.initState();
   }
+
+  final service = FlutterBackgroundService();
+  String text = '';
 
   @override
   Widget build(BuildContext context) {
@@ -53,14 +57,53 @@ class _HomeScreenState extends State<HomeScreen> {
                 padVer: 0,
                 marginHor: 0.1,
                 buttonText: state is SmsSyncLoading ? 'Stop' : 'Start',
+                // buttonText: state is SmsSyncLoading ? 'Stop' : 'Start',
+                radius: 0.03,
+                fontSize: SizeConfig.width(context, 0.09),
+                fontFamily: "Acme",
+                color: Colors.white,
+                onPressed: () async {
+                  bool isRunning = await service.isRunning();
+                  if (isRunning) {
+                    service.invoke("stopService");
+                  } else {
+                    service.startService();
+                  }
+                  if (!isRunning) {
+                    text = "stop Service";
+                  } else {
+                    text = "start Service";
+                  }
+
+                  /* if (state is! SmsSyncLoading) {
+                    cubit.smsSync();
+                  }*/
+                },
+              ),
+              ZiniPayButton(
+                padHor: 0,
+                padVer: 0,
+                marginHor: 0.1,
+                buttonText: 'Foreground',
                 radius: 0.03,
                 fontSize: SizeConfig.width(context, 0.09),
                 fontFamily: "Acme",
                 color: Colors.white,
                 onPressed: () {
-                  if (state is! SmsSyncLoading) {
-                    cubit.smsSync();
-                  }
+                  FlutterBackgroundService().invoke("setAsForeground");
+                },
+              ),
+              ZiniPayButton(
+                padHor: 0,
+                padVer: 0,
+                marginHor: 0.1,
+                buttonText: 'Background',
+                radius: 0.03,
+                fontSize: SizeConfig.width(context, 0.09),
+                fontFamily: "Acme",
+                color: Colors.white,
+                onPressed: () {
+                  FlutterBackgroundService().invoke("setAsBackground");
                 },
               ),
             ],
