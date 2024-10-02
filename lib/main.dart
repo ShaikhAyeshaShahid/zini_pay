@@ -11,11 +11,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zini_pay/constants/router.dart';
 import 'package:zini_pay/data/zini_pay_repository_impl.dart';
 import 'package:zini_pay/domain/repositories/zini_pay_repository.dart';
+import 'package:zini_pay/domain/usecases/device_usecase/device_usecase.dart';
 import 'package:zini_pay/domain/usecases/login_usecase/login.dart';
 import 'package:zini_pay/domain/usecases/sms_sync_usecase/sms_sync.dart';
+import 'package:zini_pay/domain/usecases/sms_usecase/sms.dart';
+import 'package:zini_pay/presentation/cubits/devices/devices_cubit.dart';
 import 'package:zini_pay/presentation/cubits/login/login_cubit.dart';
+import 'package:zini_pay/presentation/cubits/sms/sms_cubit.dart';
 import 'package:zini_pay/presentation/cubits/smsSync/sms_sync_cubit.dart';
 import 'package:zini_pay/presentation/screens/login_screen.dart';
+import 'package:zini_pay/presentation/screens/message_and_devices.dart';
 
 import 'presentation/screens/home_screen.dart';
 
@@ -243,6 +248,8 @@ class MyApp extends StatelessWidget {
     if (settings.name == AppRoutes.homeScreen) {
       return pageRouteBuilder(_homeScreen());
     }
+    if (settings.name == AppRoutes.messageScreen) {
+      return pageRouteBuilder(_messageScreen());    }
     return null;
   }
 
@@ -259,6 +266,23 @@ class MyApp extends StatelessWidget {
       child: HomeScreen(),
     );
   }
+
+  MultiBlocProvider _messageScreen() {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => DevicesCubit(DeviceUsecase(repository)),
+        ),
+        BlocProvider(
+          create: (context) => SmsCubit(
+            SmsUsecase(repository),
+          ),
+        ),
+      ],
+      child: const MessageAndDevices(),
+    );
+  }
+
 
   var repository = ZiniPayRepositoryImplementation();
 }

@@ -1,4 +1,7 @@
-import 'package:zini_pay/domain/entities/AuthModel.dart';
+
+
+import 'package:zini_pay/domain/entities/DeviceModel.dart';
+import 'package:zini_pay/domain/entities/SmsModel.dart';
 
 abstract class ZiniPayRepository {
   Future<String> login(
@@ -6,4 +9,6 @@ abstract class ZiniPayRepository {
     String apiKey,
   );
   Future<String> smsSync();
+  Future<List<SmsModel>> Sms();
+  Future<List<DeviceModel>> Devices();
 }

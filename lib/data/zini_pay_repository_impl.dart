@@ -7,6 +7,8 @@ import 'package:zini_pay/domain/entities/AuthModel.dart';
 import 'package:zini_pay/domain/repositories/zini_pay_repository.dart';
 
 import '../constants/logger.dart';
+import '../domain/entities/DeviceModel.dart';
+import '../domain/entities/SmsModel.dart';
 
 class ZiniPayRepositoryImplementation implements ZiniPayRepository {
   final baseUrl = 'https://demo.zinipay.com';
@@ -63,7 +65,7 @@ class ZiniPayRepositoryImplementation implements ZiniPayRepository {
 
       String jsonBody = jsonEncode(<String, dynamic>{
         'message': "Test message now",
-        'from':  "+1234567890",
+        'from': "+1234567890",
         'timestamp': "2024-07-31T10:00:00Z",
       });
 
@@ -89,6 +91,68 @@ class ZiniPayRepositoryImplementation implements ZiniPayRepository {
       throw Exception(noInternetConnectivityMsg);
     } on Exception catch (e) {
       LogManager.error('repository::smsSync::exception =', e);
+      throw Exception(e.toString().substring(11));
+    }
+  }
+
+  @override
+  Future<List<DeviceModel>> Devices() async {
+    var url = Uri.parse('$baseUrl/devices');
+    LogManager.info('repository::getDevicesList::url = $url');
+
+    try {
+      http.Response response = await http.get(url, headers: headers);
+      var responseBody = jsonDecode(response.body);
+      log("repository::getDevicesList::responseBody: $responseBody\n");
+      if (responseBody['success'] == true ) {
+        List data = responseBody['data'] as List;
+        if (data.isEmpty) {
+          return <DeviceModel>[];
+        }
+        List<DeviceModel> deviceList = List.generate(
+          data.length,
+          (index) => DeviceModel.fromJson(data[index]),
+        );
+        LogManager.info('repository::getDevicesList = $deviceList');
+        return deviceList;
+      } else {
+        throw Exception(responseBody['message'].toString().substring(11));
+      }
+    } on SocketException catch (e) {
+      throw Exception(noInternetConnectivityMsg);
+    } on Exception catch (e) {
+      LogManager.error('repository::deviceList::exception =', e);
+      throw Exception(e.toString().substring(11));
+    }
+  }
+
+  @override
+  Future<List<SmsModel>> Sms() async{
+    var url = Uri.parse('$baseUrl/sms');
+    LogManager.info('repository::getSmsList::url = $url');
+
+    try {
+      http.Response response = await http.get(url, headers: headers);
+      var responseBody = jsonDecode(response.body);
+      log("repository::getSmsList::responseBody: $responseBody\n");
+      if (responseBody['success'] == true ) {
+        List data = responseBody['data'] as List;
+        if (data.isEmpty) {
+          return <SmsModel>[];
+        }
+        List<SmsModel> smsList = List.generate(
+          data.length,
+              (index) => SmsModel.fromJson(data[index]),
+        );
+        LogManager.info('repository::getDevicesList = $smsList');
+        return smsList;
+      } else {
+        throw Exception(responseBody['message'].toString().substring(11));
+      }
+    } on SocketException catch (e) {
+      throw Exception(noInternetConnectivityMsg);
+    } on Exception catch (e) {
+      LogManager.error('repository::getSmsList::exception =', e);
       throw Exception(e.toString().substring(11));
     }
   }

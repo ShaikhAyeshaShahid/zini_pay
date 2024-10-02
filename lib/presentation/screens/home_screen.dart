@@ -42,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
+            Navigator.pushNamed(context, AppRoutes.messageScreen);
           } else if (state is SmsSyncFailed) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.errorMessage)),
@@ -57,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 padVer: 0,
                 marginHor: 0.1,
                 buttonText: state is SmsSyncLoading ? 'Stop' : 'Start',
-                // buttonText: state is SmsSyncLoading ? 'Stop' : 'Start',
                 radius: 0.03,
                 fontSize: SizeConfig.width(context, 0.09),
                 fontFamily: "Acme",
@@ -66,21 +66,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   bool isRunning = await service.isRunning();
                   if (isRunning) {
                     service.invoke("stopService");
+                    SmsSyncInitial(); // Reset the state when stopped
                   } else {
-                    service.startService();
-                  }
-                  if (!isRunning) {
-                    text = "stop Service";
-                  } else {
-                    text = "start Service";
-                  }
-
-                  /* if (state is! SmsSyncLoading) {
+                    await service.startService();
                     cubit.smsSync();
-                  }*/
+                  }
                 },
               ),
-              ZiniPayButton(
+/*              ZiniPayButton(
                 padHor: 0,
                 padVer: 0,
                 marginHor: 0.1,
@@ -105,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   FlutterBackgroundService().invoke("setAsBackground");
                 },
-              ),
+              ),*/
             ],
           );
         },
